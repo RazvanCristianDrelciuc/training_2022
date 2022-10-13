@@ -97,7 +97,7 @@ if(isset($_POST['checkout']) && $verif==0){
     mail($emailTo, $subject, $message, $headers);
     */
     unset($_SESSION['cart']);
-    header('Location: test.php');
+    header('Location: index.php');
     exit;
 }
 
@@ -132,7 +132,7 @@ if(isset($_POST['checkout']) && $verif==0){
                 </thead>
             </table>
         <?php endforeach; ?>
-        <a href="test.php">GO TO INDEX</a>
+        <a href="index.php">GO TO INDEX</a>
     </div>
     <?php endif; ?>
     <div class="formular">
@@ -146,7 +146,7 @@ if(isset($_POST['checkout']) && $verif==0){
             Comments: <input type="text" name="comments" value="<?php echo $comments?>"><br>
             <span >*<?php echo $commentsErr;?></span>
             <br>
-            <a href="test.php">Back to Index</a>
+            <a href="index.php">Back to Index</a>
             <input type="submit" name="checkout" value="Checkout">
             <p>* required field</p>
         </form>
