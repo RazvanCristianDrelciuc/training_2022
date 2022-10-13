@@ -37,7 +37,7 @@ if($_SERVER["REQUEST_METHOD"]== "POST" ){
                 $_SESSION['admin'] = $user['admin'];
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['logged_in'] = true;
-                header('Location: test.php');
+                header('Location: index.php');
             } else {
                 $accountErr = 'This Account Doesnt exists';
             }
