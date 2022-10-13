@@ -40,7 +40,7 @@ if (isset($_POST['product_id'], $_POST['quantity']) && is_numeric($_POST['produc
             } else{
             $_SESSION['cart'] = array($product_id => $quantity);}
     }
-    header('location: test.php');
+    header('location: index.php');
     exit;
 }
 
@@ -65,7 +65,7 @@ if (isset($_POST['product_id'], $_POST['quantity']) && is_numeric($_POST['produc
                         <th>PRICE <?php echo($product['price']); ?></th>
                     </div>
                     <th rowspan="3">
-                        <form action="test.php" method="POST">
+                        <form action="index.php" method="POST">
                             <input type="number" name="quantity" value="1" min="1" max="10" placeholder="Quantity" required>
                             <input type="hidden" name="product_id" value="<?=$product['id']?>">
                             <input type="submit" value="Add to Cart">
