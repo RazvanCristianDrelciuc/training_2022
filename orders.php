@@ -33,7 +33,7 @@ $orders = $stmt->fetchAll();
                 </thead>
             </table>
         <?php endforeach; ?>
-        <a href="test.php">GO TO INDEX</a>
+        <a href="index.php">GO TO INDEX</a>
 </div>
 
 <?php require_once 'footer.php'; ?>
