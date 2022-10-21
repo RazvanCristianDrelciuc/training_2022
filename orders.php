@@ -1,39 +1,37 @@
 <?php
+
 require_once 'common.php';
 
 $pdo = pdo_connect_mysql();
 
-$sql3='SELECT orders.user_name, orders.details, orders.order_date, orders.total,ordered_products.title,
- ordered_products.description,ordered_products.price,ordered_products.qty FROM
- orders INNER JOIN ordered_products ON orders.id=ordered_products.id;';
-
-$stmt=$pdo->query($sql3);
+$sql = 'SELECT * from orders';
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
 $orders = $stmt->fetchAll();
 
 ?>
 
-<?php require 'header.php' ?>
+<?php require_once 'header.php' ?>
 
 <div class="container">
-        <?php foreach($orders as $order): ?>
-            <table>
-                <thead>
-                    <tr>
-                        <div class="productdetail">
-                            <th>Username: <?php echo($order['user_name']); ?></th>
-                            <th>Details: <?php echo($order['details']); ?></th>
-                            <th>Order Date:  <?php echo($order['order_date']); ?></th>
-                        </div>
-                            <th>Title: <?php echo($order['title']); ?></th>
-                            <th>Description: <?php echo($order['description']); ?></th>
-                            <th>Price:  <?php echo($order['price']); ?></th>
-                            <th>Quantity:  <?php echo($order['qty']); ?></th>
-                            <th>Total:  <?php echo($order['total']); ?></th>
-                    </tr>
-                </thead>
-            </table>
-        <?php endforeach; ?>
-        <a href="index.php">GO TO INDEX</a>
+    <?php foreach ($orders as $order): ?>
+        <table>
+            <thead>
+            <tr>
+                <div class="productdetail">
+                    <th><?= __('Username') ?>: <?php echo($order['user_name']); ?></th>
+                    <th><?= __('Details') ?>: <?php echo($order['details']); ?></th>
+                    <th><?= __('Order date') ?>: <?php echo($order['order_date']); ?></th>
+                </div>
+                <form action="orders.php" method="POST">
+                    <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
+                    <a href="order.php?id=<?= $order['id'] ?>">View Order</a>
+                </form>
+            </tr>
+            </thead>
+        </table>
+    <?php endforeach; ?>
+    <a href="index.php">GO TO INDEX</a>
 </div>
 
 <?php require_once 'footer.php'; ?>

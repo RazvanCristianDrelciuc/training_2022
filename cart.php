@@ -1,86 +1,57 @@
 <?php
+
 require_once 'common.php';
 
-$pdo = pdo_connect_mysql();
-
-if(!isset($_SESSION['cart'])){
-    $_SESSION['cart']=array();
-}
-
-if(!empty($_SESSION['cart'])){
-    $excludeIds=array_values(array_keys($_SESSION['cart']));
-    $ct=count($excludeIds);
-    for($i=0;$i<$ct;$i++){
-        $in[]='?';
-
-
-    }
-    $in=implode(', ',$in);
-    $sql2='SELECT * FROM products WHERE id  IN (' . $in . ')';
-    $stmt = $pdo->prepare($sql2, [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY]);
+if (!empty($_SESSION['cart'])) {
+    $excludeIds = array_values(array_keys($_SESSION['cart']));
+    $in = array_fill(0, count($excludeIds), '?');
+    $in = implode(', ', $in);
+    $sql = 'SELECT * FROM products WHERE id  IN (' . $in . ')';
+    $stmt = $pdo->prepare($sql);
     $stmt->execute($excludeIds);
     $products = $stmt->fetchAll();
-    }
+}
 
-if(isset($_GET['remove']) && is_numeric($_GET['remove']) &&
-    isset($_SESSION['cart']) && isset($_SESSION['cart'][$_GET['remove']])) {
-    
-    unset($_SESSION['cart'][$_GET['remove']]);
+if (isset($_POST['product_id']) && is_numeric($_POST['product_id']) &&
+    isset($_SESSION['cart']) && isset($_SESSION['cart'][$_POST['product_id']])) {
+
+    unset($_SESSION['cart'][$_POST['product_id']]);
     header('location: cart.php');
     exit;
 }
 
-//FORM VALIDATION
-$name=$comments=$details="";
-$nameErr=$commentsErr=$detailsErr="";
+$error = array('nameErr' => 'Name is required',
+    'commentsErr' => 'Comments is required',
+    'detailsErr' => 'Details are required');
 
-if($_SERVER["REQUEST_METHOD"]== "POST" ){
-    $verif=0;
-    if(empty($_POST["name"])){
-        $nameErr="Name is required";
-        $verif=1;
-    }else {
-        $name = test_input($_POST["name"]);
-        if(!preg_match("/^[a-zA-Z-' ]*$/",$name)){
-            $nameErr="Only letters and white space allowed";
-        }
-    }
+$name = $details = $comments = '';
 
-    if(empty($_POST["comments"])){
-        $commentsErr="Comments is required";
-        $verif=1;
-    }else {
-        $comments = test_input($_POST["comments"]);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $succes = 1;
+    if (empty($_POST["name"]) || empty($_POST["comments"]) || empty($_POST["details"])) {
+        $succes = 0;
     }
-
-    if(empty($_POST["details"])){
-        $detailsErr="Details are required";
-        $verif=1;
-    }else {
-        $details = test_input($_POST["details"]);
-    }
+    $name = test_input($_POST["name"]);
+    $comments = test_input($_POST["comments"]);
+    $details = test_input($_POST["details"]);
 }
 
-if(isset($_POST['checkout']) && $verif==0){
+if (isset($_POST['checkout']) && $succes == 1) {
     $total = 0;
-    foreach($products as $product) {
+    foreach ($products as $product) {
         $total += $product['price'] * $_SESSION['cart'][$product['id']];
     }
     $orderDate = date('Y-m-d h:i:sa');
 
-    $sql = 'INSERT INTO `orders` (user_name, details, order_date, total,id) VALUES(?, ?, ?, ?,?)';
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([$_POST['name'], $_POST['details'], $orderDate,$total,$_SESSION['user_id']]);
-    
-    $sql2 = 'INSERT INTO `ordered_products` (id, title, description, price,qty) VALUES(?, ?, ?, ?,?)';
+    $sql = 'INSERT INTO `orders` (user_name, details, order_date, total) VALUES(?, ?, ?, ?)';
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$_POST['name'], $_POST['details'], $orderDate, $total]);
+
+    $lastId = $pdo->lastInsertId();
+    $sql2 = 'INSERT INTO `items` (order_id, title, description, price) VALUES(?, ?, ?, ?)';
     $stmt2 = $pdo->prepare($sql2);
-    foreach($products as $product) {
-            $productId = $_SESSION['user_id'];
-            $productTitle =  $product['title'];
-            $productDescription = $product['description'];
-            $productPrice = $product['price'];
-            $quantity = $_SESSION['cart'][$product['id']];
-            $stmt2->execute([$productId, $productTitle, $productDescription, $productPrice,$quantity]);
+    foreach ($products as $product) {
+        $stmt2->execute([$lastId, $product['title'], $product['description'], $product['price']]);
     }
     /* $emailTo = MANAGER_EMAIL;
     $subject = 'New order placed';
@@ -105,51 +76,55 @@ if(isset($_POST['checkout']) && $verif==0){
 
 <?php require 'header.php' ?>
 
-    <?php if (empty($products)): ?>
+<?php if (empty($products)): ?>
     <h1>You have no products added to cart!</h1>
-    <?php else: ?>
-
+<?php else: ?>
     <div class="container">
-        <?php foreach($products as $product): ?>
+        <?php foreach ($products as $product): ?>
             <table>
                 <thead>
-                    <tr>
-                        <div class="prodimage">
-                            <img src="images/<?= $product['product_image']?>">
-                        </div>
-                        <div class="productdetail">
-                            <th>ID <?php echo($product['id']); ?></th>
-                            <th>TITLE <?php echo($product['title']); ?></th>
-                            <th>DESCRIPTION <?php echo($product['description']); ?></th>
-                            <th>PRICE <?php echo($product['price']); ?></th>
-                        </div>
-                        <th rowspan="3">
-                            <form action="cart.php" method="POST">
-                                <a href="cart.php?remove=<?=$product['id']?>" class="remove">Remove</a>
-                            </form>
-                        </th>
-                    </tr>
+                <tr>
+                    <div class="prodimage">
+                        <img src="images/<?= $product['product_image'] ?>">
+                    </div>
+                    <div class="productdetail">
+                        <th><?= __('ID') ?>: <?= $product['id'] ?></th>
+                        <th><?= __('TITLE') ?>: <?= $product['title'] ?></th>
+                        <th><?= __('DESCRIPTION') ?>: <?= $product['description'] ?></th>
+                        <th><?= __('PRICE') ?>: <?= $product['price'] ?></th>
+                    </div>
+                    <th rowspan="3">
+                        <form action="cart.php" method="POST">
+                            <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
+                            <button type="submit">REMOVE</button>
+                        </form>
+                    </th>
+                </tr>
                 </thead>
             </table>
         <?php endforeach; ?>
         <a href="index.php">GO TO INDEX</a>
     </div>
-    <?php endif; ?>
-    <div class="formular">
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            Name: <input type="text" name="name" value="<?php echo $name?>"><br>
-            <span >*<?php echo $nameErr;?></span>
-            <br>
-            Contact Details: <input type="text" name="details" value="<?php echo $details?>"><br>
-            <span >*<?php echo $detailsErr;?></span>
-            <br>
-            Comments: <input type="text" name="comments" value="<?php echo $comments?>"><br>
-            <span >*<?php echo $commentsErr;?></span>
-            <br>
-            <a href="index.php">Back to Index</a>
-            <input type="submit" name="checkout" value="Checkout">
-            <p>* required field</p>
-        </form>
-    </div>
+<?php endif; ?>
+<div class="formular">
+    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+        <?= __('Name')?>  <input type="text" name="name" value="<?= $name ?>"><br>
+        <?php if (empty($_POST["name"])): ?>
+            <span>*<?= $error['nameErr']; ?></span>
+        <?php endif; ?>
+        <br>
+        <?= __('Contact Details')?> <input type="text" name="details" value="<?= $details ?>"><br>
+        <?php if (empty($_POST["details"])): ?>
+            <span>*<?= $error['detailsErr']; ?></span>
+        <?php endif; ?> <br>
+        <?= __('Comments')?>: <input type="text" name="comments" value="<?= $comments ?>"><br>
+        <?php if (empty($_POST["comments"])): ?>
+            <span>*<?= $error['commentsErr']; ?></span>
+        <?php endif; ?> <br>
+        <a href="index.php">Back to Index</a>
+        <input type="submit" name="checkout" value="Checkout">
+        <p>* required field</p>
+    </form>
+</div>
 
 <?php require_once 'footer.php'; ?>

@@ -1,71 +1,67 @@
 <?php
-require_once 'common.php';
 
-$pdo = pdo_connect_mysql();
+require_once 'common.php';
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $sql = 'SELECT * FROM `products` WHERE id=?';
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$id]);
-    $products = $stmt->fetch(PDO::FETCH_ASSOC);
+    $products = $stmt->fetch();
 }
 
-if(isset($_POST['edit_product'])){
-    $id=$_GET['id'];
-    $newTitle=$_POST['product_name'];
-    $newDesc=$_POST['description'];
-    $newPrice=$_POST['price'];
-    $newImage=$_POST['product_image'];
-    $sql = 'UPDATE  products  SET title=?, description=?, price=?, product_image=? WHERE id=?';
-    $stmt= $pdo->prepare($sql);
-    $stmt->execute([$newTitle, $newDesc, $newPrice, $newImage, $id]);
-
-    header('Location: products.php');
-    exit;
+$case = 0;
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $newTitle = $_POST['product_name'];
+    $newDesc = $_POST['description'];
+    $newPrice = $_POST['price'];
+    $newImage = $_POST['product_image'];
+    if (isset($_POST['edit_product'])) {
+        $id = $_GET['id'];
+        $sql = 'UPDATE  products  SET title=?, description=?, price=?, product_image=? WHERE id=?';
+        $case = 1;
+    } else if (isset($_POST['add_product'])) {
+        $sql = 'INSERT INTO `products` (title, description, price, product_image) VALUES( ?, ?, ?,?)';
+        $case = 2;
+    }
+    $id = $_GET['id'];
+    $stmt = $pdo->prepare($sql);
 }
 
-if(isset($_POST['add_product'])){
-    $newTitle=$_POST['product_name'];
-    $newDesc=$_POST['description'];
-    $newPrice=$_POST['price'];
-    $newImage=$_POST['product_image'];
-    $sql = 'INSERT INTO `products` (title, description, price, product_image) VALUES( ?, ?, ?,?)';
-    $stmt= $pdo->prepare($sql);
-    $stmt->execute([$newTitle, $newDesc, $newPrice, $newImage]);
-
-    header('Location: products.php');
-    exit;
+switch ($case) {
+    case 1:
+        $stmt->execute([$newTitle, $newDesc, $newPrice, $newImage, $id]);
+        header('Location: products.php');
+        exit;
+    case 2:
+        $stmt->execute([$newTitle, $newDesc, $newPrice, $newImage]);
+        header('Location: products.php');
+        exit;
 }
 
 ?>
 
 <?php require 'header.php' ?>
+
 <div class="formular">
-        <form action="product.php<?= isset($_GET['id']) ? '?id=' . $_GET['id'] . '' : '' ?>" method="post">
-            Nume produs: <input type="text" name="product_name" value="<?= isset($_GET['id']) ? $products['title'] : ""?>"><br>
-            <span >*</span>
-            <br>
-            Descriere Produs: <input type="text" name="description" value="<?= isset($_GET['id']) ? $products['description'] : "" ?>"><br>
-            <span >*</span>
-            <br>
-            Pret: <input type="number" name="price" value="<?=isset($_GET['id']) ? $products['price'] : ""?>"><br>
-            <span >*</span>
-            <br>
-            Imagine: 
-           <div class="prodimage">
-                            <img src="images/<?= isset($_GET['id']) ? $products['product_image'] : ""?>">
-            </div>
-            <br>
-            <br>
-            Image: <input type="file" name="product_image" >
-            <span >*</span>
-            <br><br>
+    <form action="product.php<?= isset($_GET['id']) ? '?id=' . $_GET['id'] . '' : '' ?>" method="post">
+        <?= __('Nume Produs') ?>: <input type="text" name="product_name" value="<?= isset($_GET['id']) ? $products['title'] : "" ?>"><br>
+        <br>
+        <?= __('Descriere Produs') ?>: <input type="text" name="description" value="<?= isset($_GET['id']) ? $products['description'] : "" ?>"><br>
+        <br>
+        <?= __('Pret') ?>: <input type="number" name="price" value="<?= isset($_GET['id']) ? $products['price'] : "" ?>"><br>
+        <br>
+        <?= __('Image') ?>:
+        <div class="prodimage">
+            <img src="images/<?= isset($_GET['id']) ? $products['product_image'] : "" ?>">
+        </div>
+        <br>
+        <?= __('Image') ?>: <input type="file" name="product_image">
+        <br><br>
             <input type="submit" name="edit_product" value="Edit Product">
-            <br>
+        <br>
             <input type="submit" name="add_product" value="Add Product">
-            <p>* required field</p>
-        </form>
+    </form>
 </div>
 
 <?php require_once 'footer.php'; ?>
