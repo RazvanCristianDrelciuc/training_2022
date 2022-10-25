@@ -20,9 +20,9 @@ if (isset($_POST['product_id']) && is_numeric($_POST['product_id']) &&
     exit;
 }
 
-$error = array('nameErr' => 'Name is required',
+$error = ['nameErr' => 'Name is required',
     'commentsErr' => 'Comments is required',
-    'detailsErr' => 'Details are required');
+    'detailsErr' => 'Details are required'];
 
 $name = $details = $comments = '';
 
@@ -53,25 +53,27 @@ if (isset($_POST['checkout']) && $succes == 1) {
     foreach ($products as $product) {
         $stmt2->execute([$lastId, $product['title'], $product['description'], $product['price']]);
     }
-    /* $emailTo = MANAGER_EMAIL;
+    $emailTo = MANAGER_EMAIL;
     $subject = 'New order placed';
-    
+
     $headers = "From: demo mail <razvandrelciuc@gmail.com>\r\n";
     $headers .= "MIME-Version:1.0\r\n";
     $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
 
-    // ob_start();
-    // include 'template.php';
-    // $message = ob_get_clean();
+    ob_start();
+    include 'template.php';
+    $message = ob_get_clean();
 
 
-    mail($emailTo, $subject, $message, $headers);
-    */
+    if (mail($emailTo, $subject, $message, $headers)) {
+        echo "SUCCESS";
+    } else {
+        echo "ERROR";
+    }
     unset($_SESSION['cart']);
     header('Location: index.php');
     exit;
 }
-
 ?>
 
 <?php require 'header.php' ?>
@@ -108,16 +110,16 @@ if (isset($_POST['checkout']) && $succes == 1) {
 <?php endif; ?>
 <div class="formular">
     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-        <?= __('Name')?>  <input type="text" name="name" value="<?= $name ?>"><br>
+        <?= __('Name') ?> <input type="text" name="name" value="<?= $name ?>"><br>
         <?php if (empty($_POST["name"])): ?>
             <span>*<?= $error['nameErr']; ?></span>
         <?php endif; ?>
         <br>
-        <?= __('Contact Details')?> <input type="text" name="details" value="<?= $details ?>"><br>
+        <?= __('Contact Details') ?> <input type="text" name="details" value="<?= $details ?>"><br>
         <?php if (empty($_POST["details"])): ?>
             <span>*<?= $error['detailsErr']; ?></span>
         <?php endif; ?> <br>
-        <?= __('Comments')?>: <input type="text" name="comments" value="<?= $comments ?>"><br>
+        <?= __('Comments') ?>: <input type="text" name="comments" value="<?= $comments ?>"><br>
         <?php if (empty($_POST["comments"])): ?>
             <span>*<?= $error['commentsErr']; ?></span>
         <?php endif; ?> <br>
