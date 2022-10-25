@@ -2,9 +2,9 @@
 
 require_once 'common.php';
 
-$error = array('nameErr' => 'Name is required',
+$error = ['nameErr' => 'Name is required',
     'passErr' => 'Password is requierd',
-    'accErr' => 'THis Account doesnt exist');
+    'accErr' => 'THis Account doesnt exist'];
 
 $succes = 0;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
