@@ -44,7 +44,7 @@ if (isset($_POST['product_id'])) {
         </table>
     <?php endforeach; ?>
     <a href="product.php">Add product</a>
-    <a href="cart.php">Go To Cart</a>
+    <a href="cart.php">Go to Cart</a>
 </div>
 
 <?php require_once 'footer.php'; ?>
