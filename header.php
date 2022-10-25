@@ -15,7 +15,7 @@
         <li><a href="cart.php">CART</a></li>
         <li><a href="index.php">INDEX</a></li>
         <li><a href="login.php">LOGIN</a></li>
-        <?php if ($_SESSION['admin'] == 1) { ?>
+        <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] == 1) { ?>
             <li><a href="products.php">PRODUCTS</a></li>
             <li><a href="product.php">PRODUCT</a></li>
             <li><a href="orders.php">ORDERS</a></li>

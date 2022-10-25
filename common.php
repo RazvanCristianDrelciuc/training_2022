@@ -2,7 +2,7 @@
 
 require_once 'config.php';
 
-$pdo = pdo_connect_mysql();
+$pdo = pdoConnectMysqli();
 
 session_start();
 
@@ -10,7 +10,7 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = array();
 }
 
-function pdo_connect_mysql()
+function pdoConnectMysqli()
 {
     try {
         return new PDO('mysql:host=' . DATABASE_HOST . ';dbname=' . DATABASE_NAME . ';charset=utf8', DATABASE_USER, DATABASE_PASS);
@@ -22,8 +22,7 @@ function pdo_connect_mysql()
 
 function test_input($data)
 {
-    $data = trim($data);
-    $data = stripslashes($data);
+    $data = strip_tags($data);
     $data = htmlspecialchars($data);
     return $data;
 }

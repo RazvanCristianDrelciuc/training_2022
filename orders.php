@@ -2,8 +2,6 @@
 
 require_once 'common.php';
 
-$pdo = pdo_connect_mysql();
-
 $sql = 'SELECT * from orders';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
