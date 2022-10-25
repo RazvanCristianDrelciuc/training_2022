@@ -12,10 +12,6 @@ if (isset($_GET['id'])) {
 
 $case = 0;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $newTitle = $_POST['product_name'];
-    $newDesc = $_POST['description'];
-    $newPrice = $_POST['price'];
-    $newImage = $_POST['product_image'];
     if (isset($_POST['edit_product'])) {
         $id = $_GET['id'];
         $sql = 'UPDATE  products  SET title=?, description=?, price=?, product_image=? WHERE id=?';
@@ -30,18 +26,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 switch ($case) {
     case 1:
-        $stmt->execute([$newTitle, $newDesc, $newPrice, $newImage, $id]);
+        $stmt->execute([$_POST['product_name'], $_POST['description'], $_POST['price'], $_POST['product_image'], $id]);
         header('Location: products.php');
         exit;
     case 2:
-        $stmt->execute([$newTitle, $newDesc, $newPrice, $newImage]);
+        $stmt->execute([$_POST['product_name'], $_POST['description'], $_POST['price'], $_POST['product_image']]);
         header('Location: products.php');
         exit;
 }
 
 ?>
 
-<?php require 'header.php' ?>
+<?php require_once 'header.php' ?>
 
 <div class="formular">
     <form action="product.php<?= isset($_GET['id']) ? '?id=' . $_GET['id'] . '' : '' ?>" method="post">
