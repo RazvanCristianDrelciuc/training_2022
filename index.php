@@ -2,6 +2,23 @@
 
 require_once 'common.php';
 
+if (isset($_POST['product_id'], $_POST['quantity']) && is_numeric($_POST['product_id']) && is_numeric($_POST['quantity'])) {
+    $productId = (int) $_POST['product_id'];
+    $quantity = (int) $_POST['quantity'];
+    $stmt = $pdo->prepare('SELECT * FROM products WHERE id = ?');
+    $stmt->execute([$_POST['product_id']]);
+    $product = $stmt->fetch();
+    if ($product && $quantity > 0) {
+        if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
+            if (isset($productId, $_SESSION['cart'])) {
+                $_SESSION['cart'][$productId] = ($_SESSION['cart'][$productId] ?: 0) + $quantity;
+            }
+        }
+    }
+    exit;
+    header('Location: index.php');
+}
+
 if (empty($_SESSION['cart'])) {
     $sql = 'SELECT * FROM products';
 } else {
@@ -11,31 +28,12 @@ if (empty($_SESSION['cart'])) {
     $sql = 'SELECT * FROM products WHERE id NOT IN (' . $in . ')';
 }
 $stmt = $pdo->prepare($sql);
-$stmt->execute(isset($excludeIds) ? $excludeIds : NULL);
+$stmt->execute(isset($excludeIds) ? $excludeIds : null);
 $products = $stmt->fetchAll();
-
-if (isset($_POST['product_id'], $_POST['quantity']) && is_numeric($_POST['product_id']) && is_numeric($_POST['quantity'])) {
-    $product_id = (int)$_POST['product_id'];
-    $quantity = (int)$_POST['quantity'];
-    $stmt = $pdo->prepare('SELECT * FROM products WHERE id = ?');
-    $stmt->execute([$_POST['product_id']]);
-    $products = $stmt->fetch();
-    if ($products && $quantity > 0) {
-        if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
-            if (isset($product_id, $_SESSION['cart'])) {
-                $_SESSION['cart'][$product_id] += $quantity;
-            } else {
-                $_SESSION['cart'][$product_id] = $quantity;
-            }
-        }
-    }
-    header('location: index.php');
-    exit;
-}
 
 ?>
 
-<?php require 'header.php' ?>
+<?php require_once 'header.php' ?>
 
 <div class="container">
     <?php foreach ($products as $product): ?>
@@ -52,17 +50,17 @@ if (isset($_POST['product_id'], $_POST['quantity']) && is_numeric($_POST['produc
                     <th><?= __('PRICE') ?>: <?= $product['price'] ?></th>
                 </div>
                 <th rowspan="3">
-                    <form action="index.php" method="POST">
+                    <form action="index.php" method="post">
                         <input type="number" name="quantity" value="1" min="1" max="10" placeholder="Quantity" required>
                         <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-                        <input type="submit" value="Add to Cart">
+                        <input type="submit" value="<?= __('Add to cart') ?>">
                     </form>
                 </th>
             </tr>
             </thead>
         </table>
     <?php endforeach; ?>
-    <a href="cart.php">Go To Cart</a>
+    <a href="cart.php"><?= __('Go to cart') ?></a>
 </div>
 
 <?php require_once 'footer.php'; ?>

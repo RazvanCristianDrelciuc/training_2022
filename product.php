@@ -7,11 +7,11 @@ if (isset($_GET['id'])) {
     $sql = 'SELECT * FROM `products` WHERE id=?';
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$id]);
-    $products = $stmt->fetch();
+    $product = $stmt->fetch();
 }
 
 $case = 0;
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['edit_product'])) {
         $id = $_GET['id'];
         $sql = 'UPDATE  products  SET title=?, description=?, price=?, product_image=? WHERE id=?';
@@ -41,22 +41,22 @@ switch ($case) {
 
 <div class="formular">
     <form action="product.php<?= isset($_GET['id']) ? '?id=' . $_GET['id'] . '' : '' ?>" method="post">
-        <?= __('Nume Produs') ?>: <input type="text" name="product_name" value="<?= isset($_GET['id']) ? $products['title'] : "" ?>"><br>
+        <?= __('Nume Produs') ?>: <input type="text" name="product_name" value="<?= isset($_GET['id']) ? $product['title'] : "" ?>"><br>
         <br>
-        <?= __('Descriere Produs') ?>: <input type="text" name="description" value="<?= isset($_GET['id']) ? $products['description'] : "" ?>"><br>
+        <?= __('Descriere Produs') ?>: <input type="text" name="description" value="<?= isset($_GET['id']) ? $product['description'] : "" ?>"><br>
         <br>
-        <?= __('Pret') ?>: <input type="number" name="price" value="<?= isset($_GET['id']) ? $products['price'] : "" ?>"><br>
+        <?= __('Pret') ?>: <input type="number" name="price" value="<?= isset($_GET['id']) ? $product['price'] : "" ?>"><br>
         <br>
         <?= __('Image') ?>:
         <div class="prodimage">
-            <img src="images/<?= isset($_GET['id']) ? $products['product_image'] : "" ?>">
+            <img src="images/<?= isset($_GET['id']) ? $product['product_image'] : "" ?>">
         </div>
         <br>
         <?= __('Image') ?>: <input type="file" name="product_image">
         <br><br>
-            <input type="submit" name="edit_product" value="Edit Product">
+            <input type="submit" name="edit_product" value="<?= __('Edit product') ?>">
         <br>
-            <input type="submit" name="add_product" value="Add Product">
+            <input type="submit" name="add_product" value="<?= __('Add product') ?>">
     </form>
 </div>
 

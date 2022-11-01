@@ -16,7 +16,7 @@ if (isset($_POST['product_id']) && is_numeric($_POST['product_id']) &&
     isset($_SESSION['cart']) && isset($_SESSION['cart'][$_POST['product_id']])) {
 
     unset($_SESSION['cart'][$_POST['product_id']]);
-    header('location: cart.php');
+    header('Location: cart.php');
     exit;
 }
 
@@ -26,14 +26,14 @@ $error = ['nameErr' => 'Name is required',
 
 $name = $details = $comments = '';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $succes = 1;
-    if (empty($_POST["name"]) || empty($_POST["comments"]) || empty($_POST["details"])) {
+    if (empty($_POST['name']) || empty($_POST['comments']) || empty($_POST['details'])) {
         $succes = 0;
     }
-    $name = test_input($_POST["name"]);
-    $comments = test_input($_POST["comments"]);
-    $details = test_input($_POST["details"]);
+    $name = testInput($_POST['name']);
+    $comments = testInput($_POST['comments']);
+    $details = testInput($_POST['details']);
 }
 
 if (isset($_POST['checkout']) && $succes == 1) {
@@ -56,19 +56,18 @@ if (isset($_POST['checkout']) && $succes == 1) {
     $emailTo = MANAGER_EMAIL;
     $subject = 'New order placed';
 
-    $headers = "From: demo mail <razvandrelciuc@gmail.com>\r\n";
-    $headers .= "MIME-Version:1.0\r\n";
-    $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
+    $headers = 'From: demo mail <razvandrelciuc@gmail.com>\r\n';
+    $headers .= 'MIME-Version:1.0\r\n';
+    $headers .= 'Content-Type: text/html; charset=ISO-8859-1\r\n';
 
     ob_start();
     include 'template.php';
     $message = ob_get_clean();
 
-
     if (mail($emailTo, $subject, $message, $headers)) {
-        echo "SUCCESS";
+        echo 'SUCCESS';
     } else {
-        echo "ERROR";
+        echo 'ERROR';
     }
     unset($_SESSION['cart']);
     header('Location: index.php');
@@ -76,10 +75,10 @@ if (isset($_POST['checkout']) && $succes == 1) {
 }
 ?>
 
-<?php require 'header.php' ?>
+<?php require_once 'header.php' ?>
 
 <?php if (empty($products)): ?>
-    <h1>You have no products added to cart!</h1>
+    <h1><?= __('You have no products added to cart')?>!</h1>
 <?php else: ?>
     <div class="container">
         <?php foreach ($products as $product): ?>
@@ -96,36 +95,36 @@ if (isset($_POST['checkout']) && $succes == 1) {
                         <th><?= __('PRICE') ?>: <?= $product['price'] ?></th>
                     </div>
                     <th rowspan="3">
-                        <form action="cart.php" method="POST">
+                        <form action="cart.php" method="post">
                             <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-                            <button type="submit">REMOVE</button>
+                            <button type="submit"><?= __('Remove') ?></button>
                         </form>
                     </th>
                 </tr>
                 </thead>
             </table>
         <?php endforeach; ?>
-        <a href="index.php">GO TO INDEX</a>
+        <a href="index.php"><?= __('Go to index') ?></a>
     </div>
 <?php endif; ?>
 <div class="formular">
-    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
         <?= __('Name') ?> <input type="text" name="name" value="<?= $name ?>"><br>
-        <?php if (empty($_POST["name"])): ?>
-            <span>*<?= $error['nameErr']; ?></span>
+        <?php if (empty($_POST['name'])): ?>
+            <span>*<?= __($error['nameErr']); ?></span>
         <?php endif; ?>
         <br>
         <?= __('Contact Details') ?> <input type="text" name="details" value="<?= $details ?>"><br>
-        <?php if (empty($_POST["details"])): ?>
-            <span>*<?= $error['detailsErr']; ?></span>
+        <?php if (empty($_POST['details'])): ?>
+            <span>*<?= __($error['detailsErr']); ?></span>
         <?php endif; ?> <br>
         <?= __('Comments') ?>: <input type="text" name="comments" value="<?= $comments ?>"><br>
-        <?php if (empty($_POST["comments"])): ?>
-            <span>*<?= $error['commentsErr']; ?></span>
+        <?php if (empty($_POST['comments'])): ?>
+            <span>*<?= __($error['commentsErr']); ?></span>
         <?php endif; ?> <br>
-        <a href="index.php">Back to Index</a>
-        <input type="submit" name="checkout" value="Checkout">
-        <p>* required field</p>
+        <a href="index.php"><?= __('Back to Index') ?></a>
+        <input type="submit" name="checkout" value="<?= __('Checkout') ?>">
+        <p><?= __('* requierd field') ?></p>
     </form>
 </div>
 

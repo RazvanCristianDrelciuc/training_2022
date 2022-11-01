@@ -21,15 +21,15 @@ $orders = $stmt->fetchAll();
                     <th><?= __('Details') ?>: <?php echo($order['details']); ?></th>
                     <th><?= __('Order date') ?>: <?php echo($order['order_date']); ?></th>
                 </div>
-                <form action="orders.php" method="POST">
+                <form action="orders.php" method="post">
                     <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
-                    <a href="order.php?id=<?= $order['id'] ?>">View Order</a>
+                    <a href="order.php?id=<?= $order['id'] ?>"><?= __('View order') ?></a>
                 </form>
             </tr>
             </thead>
         </table>
     <?php endforeach; ?>
-    <a href="index.php">GO TO INDEX</a>
+    <a href="index.php"><?= __('Go to index ') ?></a>
 </div>
 
 <?php require_once 'footer.php'; ?>

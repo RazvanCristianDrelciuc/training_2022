@@ -2,15 +2,15 @@
 
 require_once 'common.php';
 
-$sql = "SELECT * FROM products";
+$sql = 'SELECT * FROM products';
 $stmt = $pdo->prepare($sql);
 $stmt->execute();
 $products = $stmt->fetchAll();
 
 if (isset($_POST['product_id'])) {
-    $product_remove = (int)$_POST['product_id'];
+    $productRemove = (int) $_POST['product_id'];
     $stmt = $pdo->prepare('DELETE FROM products WHERE id = ?');
-    $stmt->execute([$product_remove]);
+    $stmt->execute([$productRemove]);
     header('Location: products.php');
 }
 
@@ -33,18 +33,18 @@ if (isset($_POST['product_id'])) {
                     <th><?= __('PRICE') ?>: <?= $product['price'] ?></th>
                 </div>
                 <th rowspan="3">
-                    <form action="products.php" method="POST">
+                    <form action="products.php" method="post">
                         <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-                        <button type="submit">REMOVE</button>
-                        <a href="product.php?id=<?= $product['id'] ?>">EDIT PRODUCT</a>
+                        <button type="submit"><?= __('Remove') ?></button>
+                        <a href="product.php?id=<?= $product['id'] ?>"><?= __('Edit Product') ?></a>
                     </form>
                 </th>
             </tr>
             </thead>
         </table>
     <?php endforeach; ?>
-    <a href="product.php">Add product</a>
-    <a href="cart.php">Go to Cart</a>
+    <a href="product.php"><?= __('Add product') ?></a>
+    <a href="cart.php"><?= __('Go to cart') ?></a>
 </div>
 
 <?php require_once 'footer.php'; ?>

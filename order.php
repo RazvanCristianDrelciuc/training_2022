@@ -25,7 +25,7 @@ $items = $stmt->fetchAll();
             </thead>
         </table>
     <?php endforeach; ?>
-    <a href="index.php">GO TO INDEX</a>
+    <a href="index.php"><?= __('GO TO INDEX') ?></a>
 </div>
 
 <?php require_once 'footer.php'; ?>

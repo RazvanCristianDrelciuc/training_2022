@@ -7,7 +7,7 @@ $pdo = pdoConnectMysqli();
 session_start();
 
 if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = array();
+    $_SESSION['cart'] = [];
 }
 
 function pdoConnectMysqli()
@@ -20,7 +20,7 @@ function pdoConnectMysqli()
     }
 }
 
-function test_input($data)
+function testInput($data)
 {
     $data = strip_tags($data);
     $data = htmlspecialchars($data);

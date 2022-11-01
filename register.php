@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user_nameErr = "Name is required";
         $verif = 1;
     } else {
-        $user_name = test_input($_POST["user_name"]);
+        $user_name = testInput($_POST["user_name"]);
         if (!preg_match("/^[a-zA-Z-' ]*$/", $user_name)) {
             $user_nameErr = "Only letters and white space allowed";
         }
@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $passwordErr = "Password is required";
         $verif = 1;
     } else {
-        $password = test_input($_POST["password"]);
+        $password = testInput($_POST["password"]);
     }
 
     if ($verif == 0 && isset($_POST['user_name']) && isset($_POST['password'])) {

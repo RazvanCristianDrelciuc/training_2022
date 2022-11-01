@@ -7,13 +7,13 @@ $error = ['nameErr' => 'Name is required',
     'accErr' => 'THis Account doesnt exist'];
 
 $succes = 0;
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $succes = 0;
     if (empty($_POST['user_name']) || empty($_POST['password'])) {
         $succes = 1;
     }
-    $user_name = test_input($_POST["user_name"]);
-    $password = test_input($_POST["password"]);
+    $user_name = testInput($_POST['user_name']);
+    $password = testInput($_POST['password']);
 
     if ($succes == 0 && isset($user_name) && isset($password)) {
         $sql = 'SELECT * FROM users where user_name=? limit 1';
@@ -34,26 +34,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 ?>
 
-<?php require 'header.php' ?>
+<?php require_once 'header.php' ?>
 
 <div class="formular">
     <form action="login.php" method="post">
-        <h1>Log In</h1>
-        <p>Please fill in this form to log to an account.</p>
+        <h1><?= __('Log in') ?></h1>
+        <p><?= __('Please fill in this form to log to an account.') ?></p>
         <hr>
         *<?= __('Name') ?>: <input type="text" name="user_name" value=""><br>
         <?php if (empty($_POST["user_name"])): ?>
-            <span>*<?= $error['nameErr']; ?></span>
+            <span>*<?= __($error['nameErr']); ?></span>
         <?php endif; ?>
         <br>
         *<?= __('Password') ?>: <input type="text" name="password" value=""><br>
-        <?php if (empty($_POST["password"])): ?>
-            <span>*<?= $error['passErr']; ?></span>
+        <?php if (empty($_POST['password'])): ?>
+            <span>*<?= __($error['passErr']); ?></span>
         <?php endif; ?>
         <br>
-        <a href="register.php">Register</a>
-        <input type="submit" name="login" value="Submit">
-        <p>* required field</p>
+        <a href="register.php"><?= __('Register') ?></a>
+        <input type="submit" name="login" value="<?= __('Submit') ?>">
+        <p><?= __('* required field') ?></p>
     </form>
 </div>
 
