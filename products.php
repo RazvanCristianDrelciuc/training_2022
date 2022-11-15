@@ -2,17 +2,20 @@
 
 require_once 'common.php';
 
-$sql = 'SELECT * FROM products';
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$products = $stmt->fetchAll();
+isAdmin();
 
 if (isset($_POST['product_id'])) {
     $productRemove = (int) $_POST['product_id'];
     $stmt = $pdo->prepare('DELETE FROM products WHERE id = ?');
     $stmt->execute([$productRemove]);
     header('Location: products.php');
+    exit;
 }
+
+$sql = 'SELECT * FROM products';
+$stmt = $pdo->prepare($sql);
+$stmt->execute();
+$products = $stmt->fetchAll();
 
 ?>
 
