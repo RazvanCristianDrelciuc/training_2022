@@ -27,6 +27,13 @@ function testInput($data)
     return $data;
 }
 
+function isAdmin(){
+    if($_SESSION['admin'] != 1){
+        header('Location: index.php');
+        exit;
+    }
+}
+
 function __($string)
 {
     return $string;

@@ -3,20 +3,14 @@
 require_once 'common.php';
 
 if (isset($_POST['product_id'], $_POST['quantity']) && is_numeric($_POST['product_id']) && is_numeric($_POST['quantity'])) {
-    $productId = (int) $_POST['product_id'];
-    $quantity = (int) $_POST['quantity'];
     $stmt = $pdo->prepare('SELECT * FROM products WHERE id = ?');
     $stmt->execute([$_POST['product_id']]);
     $product = $stmt->fetch();
-    if ($product && $quantity > 0) {
-        if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
-            if (isset($productId, $_SESSION['cart'])) {
-                $_SESSION['cart'][$productId] = ($_SESSION['cart'][$productId] ?: 0) + $quantity;
-            }
-        }
+    if ($product && $_POST['quantity'] > 0) {
+                $_SESSION['cart'][$_POST['product_id']] = ($_SESSION['cart'][$_POST['product_id']] ?: 0) +  $_POST['quantity'];
     }
-    exit;
     header('Location: index.php');
+    exit;
 }
 
 if (empty($_SESSION['cart'])) {

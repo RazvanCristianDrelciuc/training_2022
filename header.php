@@ -12,13 +12,13 @@
 
 <div class="nav">
     <ul>
-        <li><a href="cart.php">CART</a></li>
-        <li><a href="index.php">INDEX</a></li>
-        <li><a href="login.php">LOGIN</a></li>
+        <li><a href="cart.php"><?= __('Cart') ?></a></li>
+        <li><a href="index.php"><?= __('Index') ?></a></li>
+        <li><a href="login.php"><?= __('Login') ?></a></li>
         <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] == 1) { ?>
-            <li><a href="products.php">PRODUCTS</a></li>
-            <li><a href="product.php">PRODUCT</a></li>
-            <li><a href="orders.php">ORDERS</a></li>
+            <li><a href="products.php"><?= __('Products') ?></a></li>
+            <li><a href="product.php"><?= __('Product') ?></a></li>
+            <li><a href="orders.php"><?= __('Orders') ?></a></li>
         <?php } ?>
     </ul>
 </div>

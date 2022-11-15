@@ -1,19 +1,3 @@
-<?php
-
-require_once 'common.php';
-
-if (!empty($_SESSION['cart'])) {
-    $excludeIds = array_values(array_keys($_SESSION['cart']));
-    $in = array_fill(0, count($excludeIds), '?');
-    $in = implode(', ', $in);
-    $sql = 'SELECT * FROM products WHERE id  IN (' . $in . ')';
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($excludeIds);
-    $products = $stmt->fetchAll();
-}
-
-?>
-
 <?php require_once 'header.php'; ?>
 
     <div class="container">
