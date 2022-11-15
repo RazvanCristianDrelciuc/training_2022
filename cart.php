@@ -2,6 +2,13 @@
 
 require_once 'common.php';
 
+if (isset($_POST['product_id']) && is_numeric($_POST['product_id'])) {
+
+    unset($_SESSION['cart'][$_POST['product_id']]);
+    header('Location: cart.php');
+    exit;
+}
+
 if (!empty($_SESSION['cart'])) {
     $excludeIds = array_values(array_keys($_SESSION['cart']));
     $in = array_fill(0, count($excludeIds), '?');
@@ -12,63 +19,57 @@ if (!empty($_SESSION['cart'])) {
     $products = $stmt->fetchAll();
 }
 
-if (isset($_POST['product_id']) && is_numeric($_POST['product_id']) &&
-    isset($_SESSION['cart']) && isset($_SESSION['cart'][$_POST['product_id']])) {
-
-    unset($_SESSION['cart'][$_POST['product_id']]);
-    header('Location: cart.php');
-    exit;
-}
-
-$error = ['nameErr' => 'Name is required',
-    'commentsErr' => 'Comments is required',
-    'detailsErr' => 'Details are required'];
-
 $name = $details = $comments = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $succes = 1;
-    if (empty($_POST['name']) || empty($_POST['comments']) || empty($_POST['details'])) {
-        $succes = 0;
+    $error = [];
+    if (empty($_POST['name'])) {
+        $error['nameErr'] = 'Name is req';
     }
+    if (empty($_POST['comments'])) {
+        $error['commentsErr'] = 'Name is req';
+    }
+    if (empty($_POST['details'])) {
+        $error['detailsErr'] = 'Name is req';
+    }
+
     $name = testInput($_POST['name']);
     $comments = testInput($_POST['comments']);
     $details = testInput($_POST['details']);
 }
 
-if (isset($_POST['checkout']) && $succes == 1) {
+if (isset($_POST['checkout']) && empty($error)) {
     $total = 0;
     foreach ($products as $product) {
         $total += $product['price'] * $_SESSION['cart'][$product['id']];
     }
     $orderDate = date('Y-m-d h:i:sa');
 
-    $sql = 'INSERT INTO `orders` (user_name, details, order_date, total) VALUES(?, ?, ?, ?)';
+    $sql = 'INSERT INTO `orders` (user_name, details, order_date, total) VALUES (?, ?, ?, ?)';
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$_POST['name'], $_POST['details'], $orderDate, $total]);
 
     $lastId = $pdo->lastInsertId();
-    $sql2 = 'INSERT INTO `items` (order_id, title, description, price) VALUES(?, ?, ?, ?)';
+    $sql2 = 'INSERT INTO `items` (order_id, title, description, price) VALUES (?, ?, ?, ?)';
     $stmt2 = $pdo->prepare($sql2);
     foreach ($products as $product) {
         $stmt2->execute([$lastId, $product['title'], $product['description'], $product['price']]);
     }
+
     $emailTo = MANAGER_EMAIL;
     $subject = 'New order placed';
-
-    $headers = 'From: demo mail <razvandrelciuc@gmail.com>\r\n';
-    $headers .= 'MIME-Version:1.0\r\n';
-    $headers .= 'Content-Type: text/html; charset=ISO-8859-1\r\n';
+    $headers = [
+        'From' => 'demo mail <razvandrelciuc@gmail.com>',
+        'Content-Type' => 'text/html; charset=ISO-8859-1',
+        'MIME-Version' => '1.0',
+    ];
 
     ob_start();
     include 'template.php';
     $message = ob_get_clean();
 
-    if (mail($emailTo, $subject, $message, $headers)) {
-        echo 'SUCCESS';
-    } else {
-        echo 'ERROR';
-    }
+    mail($emailTo, $subject, $message, $headers);
+
     unset($_SESSION['cart']);
     header('Location: index.php');
     exit;
@@ -78,7 +79,7 @@ if (isset($_POST['checkout']) && $succes == 1) {
 <?php require_once 'header.php' ?>
 
 <?php if (empty($products)): ?>
-    <h1><?= __('You have no products added to cart')?>!</h1>
+    <h1><?= __('You have no products added to cart') ?>!</h1>
 <?php else: ?>
     <div class="container">
         <?php foreach ($products as $product): ?>
@@ -107,19 +108,19 @@ if (isset($_POST['checkout']) && $succes == 1) {
         <a href="index.php"><?= __('Go to index') ?></a>
     </div>
 <?php endif; ?>
-<div class="formular">
-    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+<div class="form">
+    <form action="cart.php" method="post">
         <?= __('Name') ?> <input type="text" name="name" value="<?= $name ?>"><br>
-        <?php if (empty($_POST['name'])): ?>
+        <?php if (!empty($error['nameErr'])): ?>
             <span>*<?= __($error['nameErr']); ?></span>
         <?php endif; ?>
         <br>
         <?= __('Contact Details') ?> <input type="text" name="details" value="<?= $details ?>"><br>
-        <?php if (empty($_POST['details'])): ?>
+        <?php if (!empty($error['detailsErr'])): ?>
             <span>*<?= __($error['detailsErr']); ?></span>
         <?php endif; ?> <br>
         <?= __('Comments') ?>: <input type="text" name="comments" value="<?= $comments ?>"><br>
-        <?php if (empty($_POST['comments'])): ?>
+        <?php if (!empty($error)): ?>
             <span>*<?= __($error['commentsErr']); ?></span>
         <?php endif; ?> <br>
         <a href="index.php"><?= __('Back to Index') ?></a>
