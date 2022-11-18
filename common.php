@@ -27,8 +27,9 @@ function testInput($data)
     return $data;
 }
 
-function isAdmin(){
-    if($_SESSION['admin'] != 1){
+function redirectIfNotAdmin()
+{
+    if ($_SESSION['admin'] == 0) {
         header('Location: index.php');
         exit;
     }

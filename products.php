@@ -2,7 +2,7 @@
 
 require_once 'common.php';
 
-isAdmin();
+redirectIfNotAdmin();
 
 if (isset($_POST['product_id'])) {
     $productRemove = (int) $_POST['product_id'];

@@ -59,9 +59,9 @@ if (isset($_POST['checkout']) && empty($error)) {
     $emailTo = MANAGER_EMAIL;
     $subject = 'New order placed';
     $headers = [
-        'From' => 'demo mail <razvandrelciuc@gmail.com>',
-        'Content-Type' => 'text/html; charset=ISO-8859-1',
-        'MIME-Version' => '1.0',
+        __('From') =>__( 'demo mail <razvandrelciuc@gmail.com>'),
+        __('Content-Type') => __('text/html; charset=ISO-8859-1'),
+        _('MIME-Version') => '1.0',
     ];
 
     ob_start();
