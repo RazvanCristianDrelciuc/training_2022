@@ -47,7 +47,7 @@ $products = $stmt->fetchAll();
         </table>
     <?php endforeach; ?>
     <a href="product.php"><?= __('Add product') ?></a>
-    <a href="cart.php"><?= __('Go to cart') ?></a>
+    <a href="cart.php"><?= __('Go to Cart') ?></a>
 </div>
 
 <?php require_once 'footer.php'; ?>

@@ -19,9 +19,9 @@ $orders = $stmt->fetchAll();
                 <thead>
                 <tr>
                     <div class="productdetail">
-                        <th><?= __('Username') ?>: <?= $order['user_name']; ?></th>
-                        <th><?= __('Details') ?>: <?= $order['details']; ?></th>
-                        <th><?= __('Order date') ?>: <?= $order['order_date']; ?></th>
+                        <th><?= __('Username') ?> : <?= $order['user_name']; ?></th>
+                        <th><?= __('Details') ?> : <?= $order['details']; ?></th>
+                        <th><?= __('Order date') ?> : <?= $order['order_date']; ?></th>
                     </div>
                     <a href="order.php?id=<?= $order['id'] ?>"><?= __('View order') ?></a>
                 </tr>

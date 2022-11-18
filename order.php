@@ -20,18 +20,18 @@ $order = $stmt->fetch();
 
 <div class="container">
     <div class="productdetail">
-        <th><?= __('Username') ?>: <?= $order['user_name']; ?></th>
-        <th><?= __('Details') ?>: <?= $order['details']; ?></th>
-        <th><?= __('Order date') ?>: <?= $order['order_date']; ?></th>
+        <th><?= __('Username') ?> : <?= $order['user_name']; ?></th>
+        <th><?= __('Details') ?> : <?= $order['details']; ?></th>
+        <th><?= __('Order date') ?> : <?= $order['order_date']; ?></th>
     </div>
     <?php foreach ($items as $item): ?>
         <table>
             <thead>
             <tr>
                 <div class="productdetail">
-                    <th><?= __('Title') ?>: <?= $item['title']; ?></th>
-                    <th><?= __('Description') ?>: <?= $item['description']; ?></th>
-                    <th><?= __('Price') ?>: <?= $item['price']; ?></th>
+                    <th><?= __('Title') ?> : <?= $item['title']; ?></th>
+                    <th><?= __('Description') ?> : <?= $item['description']; ?></th>
+                    <th><?= __('Price') ?> : <?= $item['price']; ?></th>
                 </div>
             </tr>
             </thead>

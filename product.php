@@ -16,6 +16,7 @@ $productName = '';
 $description = '';
 $price = '';
 $case = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (empty($_POST['product_name'])) {

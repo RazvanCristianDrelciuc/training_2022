@@ -2,7 +2,8 @@
 
 require_once 'common.php';
 
-$username = $password = '';
+$username = '';
+$password = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $error = [];
     if (empty($_POST['user_name'])) {

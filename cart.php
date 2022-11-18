@@ -116,7 +116,7 @@ if (isset($_POST['checkout']) && empty($error)) {
         <?php endif; ?>
         <br>
         <?= __('Contact Details') ?> <input type="text" name="details" value="<?= $details ?>"><br>
-        <?php if (!empty($error['detailsErr'])): ?>
+        <?php if (!empty($error['detailsErr'])) : ?>
             <span>*<?= __($error['detailsErr']); ?></span>
         <?php endif; ?> <br>
         <?= __('Comments') ?>: <input type="text" name="comments" value="<?= $comments ?>"><br>
